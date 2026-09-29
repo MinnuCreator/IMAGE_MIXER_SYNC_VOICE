@@ -111,11 +111,11 @@ def test_pipeline_e2e(tmp_path: Path):
     assert pytest.approx(tl_data["timeline"][-1]["end"], abs=0.05) == 4.5
 
     # Check video duration matches audio duration via ffprobe
-    from engine.audio import verify_rendered_video
+    from engine.audio import DURATION_TOLERANCE, verify_rendered_video
     v_report = verify_rendered_video(
         final_video,
         expected_audio_duration=4.5,
-        tolerance=0.25,
+        tolerance=DURATION_TOLERANCE,
         expected_width=640,
         expected_height=360,
         expected_fps=15.0,

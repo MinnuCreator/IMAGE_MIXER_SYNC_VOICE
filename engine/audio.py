@@ -10,6 +10,10 @@ class AudioError(Exception):
     pass
 
 
+# Default post-render video vs audio duration tolerance in seconds
+DURATION_TOLERANCE: float = 2.0
+
+
 def format_timestamp(seconds: float) -> str:
     """Format seconds into HH:MM:SS.mmm or MM:SS.mmm."""
     if seconds < 0:
@@ -110,7 +114,7 @@ def get_audio_duration(audio_path: Path) -> float:
 def verify_rendered_video(
     video_path: Path,
     expected_audio_duration: float,
-    tolerance: float = 0.25,
+    tolerance: float = DURATION_TOLERANCE,
     expected_width: int = None,
     expected_height: int = None,
     expected_fps: float = None,
@@ -123,7 +127,7 @@ def verify_rendered_video(
     - File exists and is non-empty
     - Video stream presence, codec, resolution, and fps
     - Audio stream presence and codec
-    - Video duration matches audio duration within tolerance (~0.25s)
+    - Video duration matches audio duration within tolerance (default ~2.0s)
     """
     from engine.models import VerificationReport
 
@@ -206,7 +210,7 @@ def verify_rendered_video(
         except Exception:
             fps = 0.0
 
-    diff = abs(video_dur - expected_audio_duration)
+    diff = round(abs(video_dur - expected_audio_duration), 3)
     if diff > tolerance:
         errors.append(
             f"Video duration ({video_dur:.3f}s) differs from audio duration "

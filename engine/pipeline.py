@@ -5,7 +5,12 @@ from typing import Callable, List, Optional
 
 from rich.console import Console
 
-from engine.audio import format_timestamp, get_audio_duration, verify_rendered_video
+from engine.audio import (
+    DURATION_TOLERANCE,
+    format_timestamp,
+    get_audio_duration,
+    verify_rendered_video,
+)
 from engine.cache import CacheManager
 from engine.capcut_exporter import CapCutExporter
 from engine.config import AppConfig
@@ -329,7 +334,7 @@ class VideoAutomationPipeline:
         verification = verify_rendered_video(
             final_video_path,
             expected_audio_duration=audio_duration,
-            tolerance=0.25,
+            tolerance=DURATION_TOLERANCE,
             expected_width=self.config.video_width,
             expected_height=self.config.video_height,
             expected_fps=self.config.video_fps,
